@@ -1,0 +1,23 @@
+{
+    "id": "test-request-config",
+    "subject_identifier": "email",
+    "configuration": {
+      "name": "Basic Proof",
+      "version": "1.0",
+      "requested_attributes": [
+        {
+          "name": "email",
+          "restrictions": []
+        },
+        {
+          "name": "first_name",
+          "restrictions": []
+        },
+        {
+          "name": "last_name",
+          "restrictions": []
+        }
+      ],
+      "requested_predicates": []
+    }
+  }
