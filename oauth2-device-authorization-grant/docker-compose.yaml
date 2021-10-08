@@ -13,3 +13,77 @@ services:
     ports:
       - "8080:8080"
     # command: "-b 0.0.0.0 -Dkeycloak.migration.action=export "
+  
+
+  controller-db:
+    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
+    environment:
+      POSTGRESQL_USER: ${POSTGRESQL_USER:-controller}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD:-password}
+      POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE:-controller}
+      POSTGRESQL_ADMIN_PASSWORD: ${POSTGRESQL_ADMIN_PASSWORD:-password}
+    #ports:
+      #- ${DATABASE_PORT:-5432}:5432
+    networks:
+      - vc_authn_oidc
+
+  aca-py:
+    image: bcgovimages/aries-cloudagent:py36-1.15-1_0.6.0
+    ports:
+      - ${AGENT_ADMIN_PORT:-10000}:${AGENT_ADMIN_PORT:-10000}
+      - ${AGENT_HTTP_PORT:-10001}:${AGENT_HTTP_PORT:-10001}
+    networks:
+      - vc_authn_oidc
+    entrypoint: /bin/bash
+    command: [
+        "-c",
+        "sleep 14;
+        aca-py start \
+        --inbound-transport http '0.0.0.0' ${AGENT_HTTP_PORT:-10001} \
+        --outbound-transport http \
+        --endpoint ${AGENT_ENDPOINT:-http://localhost:10000} \
+        --genesis-url '${GENESIS_URL:-http://test.bcovrin.vonx.io/genesis}' \
+        --auto-verify-presentation \
+        --auto-provision \
+        --wallet-type 'indy' \
+        --wallet-name 'oidc_agent_wallet' \
+        --wallet-key '${WALLET_ENCRYPTION_KEY:-12345}' \
+        --seed '${AGENT_SEED:-oonohdaemeesahhee6Chih3aemaecoos}' \
+        --admin '0.0.0.0' ${AGENT_ADMIN_PORT:-10000} \
+        --label ${AGENT_NAME:-auth-agent} \
+        --webhook-url ${IDENTITY_SERVER_WEB_HOOK_URL:-http://localhost:5000}
+        --admin-insecure-mode
+        --log-level debug",
+      ]
+
+  controller:
+    build: ./vc-authn-oidc-controller
+    ports:
+      - "5000:80"
+    environment:
+      - PGPASSWORD=${POSTGRESQL_PASSWORD:-password}
+      #- ApiKey=${IDENTITY_SERVER_API_KEY:-12345}
+      - SwaggerEnabled=${IDENTITY_SERVER_SWAGGER_ENABLED:-true}
+      - IdentityServer__ConnectionStrings__Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-controller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
+      - IdentityServer__PublicOrigin=${IDENTITY_SERVER_URL:-http://localhost:5000}
+      - IdentityServer__PollInterval=${IDENTITY_SERVER_POLL_INTERVAL:-2000}
+      - ACAPY__AdminUrl=${ACAPY_ADMIN_URL:-http://aca-py:10000}
+      - ACAPY__AdminURLApiKey=${ACAPY_ADMIN_URL_API_KEY}
+      - ACAPY__AgentUrl=${ACAPY_AGENT_URL:-http://aca-py:10001}
+      - UrlShortenerService__ConnectionStrings__Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-controller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
+      - UrlShortenerService__BaseUrl=${IDENTITY_SERVER_URL:-http://localhost:5000}/url
+      - SessionStorageService__ConnectionStrings_Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-coontroller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
+    networks:
+      - vc_authn_oidc
+    depends_on:
+      - controller-db
+    volumes:
+      - ./vc-authn-oidc-controller-configs:/import/
+    command: >
+      /bin/bash -c "
+      echo waiting for controller-db ...;
+      sleep 15;
+      dotnet VCAuthn.dll & /app/import.sh; wait"
+
+networks:
+  vc_authn_oidc:
