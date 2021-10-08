@@ -1,0 +1,29 @@
+{
+    "id": "test-request-config",
+    "subject_identifier": "email",
+    "configuration": {
+      "name": "Basic Proof",
+      "version": "1.0",
+      "requested_attributes": [
+        {
+          "name": "email",
+          "restrictions": [{
+            "schema_id": "HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0"
+          }]
+        },
+        {
+          "name": "first_name",
+          "restrictions": [{
+            "schema_id": "HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0"
+          }]
+        },
+        {
+          "name": "last_name",
+          "restrictions": [{
+            "schema_id": "HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0"
+          }]
+        }
+      ],
+      "requested_predicates": []
+    }
+  }
