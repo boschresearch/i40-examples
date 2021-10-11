@@ -16,6 +16,7 @@ import os
 BASE_URL = os.environ.get('BASE_URL') or 'http://localhost:8080'
 CLIENT_ID = os.environ.get('CLIENT_ID') or 'devicegrant'
 REALM = os.environ.get('REALM') or 'test'
+DISABLE_SSL_VERIFY = os.environ.get('DISABLE_SSL_VERIFY', 'False').lower() in ('true', '1')
 
 DEVICE_GRANT_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/auth/device'
 TOKEN_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/token'
@@ -25,7 +26,11 @@ CERTIFICATE_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-co
 def pprint(j):
     print(json.dumps(j, indent=4))
 
-r = requests.post(DEVICE_GRANT_ENDPOINT, {'client_id': CLIENT_ID})
+session = requests.Session()
+if DISABLE_SSL_VERIFY:
+    session.verify = False
+
+r = session.post(DEVICE_GRANT_ENDPOINT, {'client_id': CLIENT_ID})
 rj = r.json()
 device_grant_result = rj
 device_code = rj['device_code']
@@ -45,7 +50,7 @@ while True:
         'client_id': CLIENT_ID,
         'device_code': device_code
     }
-    r = requests.post(TOKEN_ENDPOINT, data)
+    r = session.post(TOKEN_ENDPOINT, data)
     rj = r.json()
     if 'error' in rj:
         #pprint(rj)
@@ -59,7 +64,7 @@ while True:
 
 pprint(token_result)
 
-r = requests.post(USERINFO_ENDPOINT, {'access_token': token_result['access_token']})
+r = session.post(USERINFO_ENDPOINT, {'access_token': token_result['access_token']})
 userinfo = r.json()
 print()
 at = jwt.decode(token_result['access_token'], options={"verify_signature": False})
