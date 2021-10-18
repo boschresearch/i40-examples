@@ -30,8 +30,8 @@ services:
   aca-py:
     image: bcgovimages/aries-cloudagent:py36-1.15-1_0.6.0
     ports:
-      - ${AGENT_ADMIN_PORT:-10000}:${AGENT_ADMIN_PORT:-10000}
-      - ${AGENT_HTTP_PORT:-10001}:${AGENT_HTTP_PORT:-10001}
+      #- ${AGENT_ADMIN_PORT:-10000}:${AGENT_ADMIN_PORT:-10000}
+      - ${AGENT_HTTP_PORT:-10001}:10001
     networks:
       - vc_authn_oidc
     entrypoint: /bin/bash
@@ -39,7 +39,7 @@ services:
         "-c",
         "sleep 14;
         aca-py start \
-        --inbound-transport http '0.0.0.0' ${AGENT_HTTP_PORT:-10001} \
+        --inbound-transport http '0.0.0.0' 10001 \
         --outbound-transport http \
         --endpoint ${AGENT_ENDPOINT:-http://localhost:10000} \
         --genesis-url '${GENESIS_URL:-http://test.bcovrin.vonx.io/genesis}' \
