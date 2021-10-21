@@ -1,0 +1,40 @@
+version: '3.5'
+
+networks:
+  agentnet:
+
+services:
+  acapyissuer:
+    image: bcgovimages/aries-cloudagent:py36-1.16-0_0.6.0
+    container_name: acapyissuer
+    networks:
+      - agentnet
+    ports:
+      - "20000:10000"
+      - "20001:10001"
+    entrypoint: /bin/bash
+    # variables replaced by docker-compose (not inside the container!)
+    command: [
+        "-c",
+        "aca-py start \
+        -it http '0.0.0.0' 10000 \
+        -ot http \
+        --admin '0.0.0.0' 10001 \
+        --wallet-type indy \
+        --wallet-name mywallet \
+        --wallet-key ${AGENT2_SEED:-12345} \
+        --auto-provision \
+        --seed ${AGENT_SEED:-quoi7Eukie8yiuGaiy3daej4ar7rieSo} \
+        --genesis-url ${GENESIS_URL:-http://test.bcovrin.vonx.io/genesis} \
+        --endpoint ${ENDPOINT:-http://localhost:10000} \
+        --webhook-url ${WEBHOOK_URL:-http://issuer-ui:3000/api/webhooks}
+        --admin-insecure-mode \
+        --plugin aries_cloudagent.messaging.jsonld \
+        --auto-ping-connection \
+        --auto-accept-invites \
+        --auto-accept-requests \
+        --auto-verify-presentation \
+        --public-invites \
+        --invite-public \
+        --log-level info",
+    ]
