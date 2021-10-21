@@ -1,0 +1,58 @@
+version: '3.5'
+
+networks:
+  agentnet:
+
+services:
+  issuer:
+    build: .
+    networks:
+      - agentnet
+    depends_on:
+      - acapyissuer
+    ports:
+      - ${ISSUER_HTTP_PORT:-3000}:3000
+    environment:
+      # this is a workaround if a reverse proxy, e.g. nginx uses a subdirectory
+      # if you change this, don't forget to also update the WEBHOOK_URL accordingly!
+      - BASE_PATH=${ISSUER_BASE_PATH-}
+    command: [
+      "sh",
+      "-c",
+      "sleep 10 && npm run start"
+    ]
+
+  acapyissuer:
+    image: bcgovimages/aries-cloudagent:py36-1.16-0_0.6.0
+    container_name: acapyissuer
+    networks:
+      - agentnet
+    ports:
+      - ${AGENT_HTTP_PORT:-20000}:10000
+    entrypoint: /bin/bash
+    # variables replaced by docker-compose (not inside the container!)
+    command: [
+        "-c",
+        "aca-py start \
+        -it http '0.0.0.0' 10000 \
+        -ot http \
+        --admin '0.0.0.0' 10001 \
+        --wallet-type indy \
+        --wallet-name mywallet \
+        --wallet-key ${AGENT2_SEED:-12345} \
+        --auto-provision \
+        --seed ${AGENT_SEED:?\n\n=== Please create and set AGENT_SEED (private secret) in .env file and register your identity on the ledger. 'pwgen -1 32' ===\n} \
+        --genesis-url ${GENESIS_URL:-http://test.bcovrin.vonx.io/genesis} \
+        --endpoint ${ENDPOINT:?\n\n=== For an issuer, it's mandatory to provide a public endpoint which points to this container ===\n} \
+        --webhook-url ${WEBHOOK_URL:-http://issuer:3000/api/webhooks}
+        --admin-insecure-mode \
+        --plugin aries_cloudagent.messaging.jsonld \
+        --auto-ping-connection \
+        --auto-accept-invites \
+        --auto-accept-requests \
+        --auto-verify-presentation \
+        --public-invites \
+        --label ${ISSUER_LABEL:-IdentityIssuer} \
+        --invite-public \
+        --log-level info",
+    ]
