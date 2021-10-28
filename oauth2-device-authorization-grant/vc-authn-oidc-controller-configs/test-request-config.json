@@ -7,15 +7,21 @@
       "requested_attributes": [
         {
           "name": "email",
-          "restrictions": []
+          "restrictions": [{
+            "schema_id": "HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0"
+          }]
         },
         {
           "name": "first_name",
-          "restrictions": []
+          "restrictions": [{
+            "schema_id": "HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0"
+          }]
         },
         {
           "name": "last_name",
-          "restrictions": []
+          "restrictions": [{
+            "schema_id": "HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0"
+          }]
         }
       ],
       "requested_predicates": []
