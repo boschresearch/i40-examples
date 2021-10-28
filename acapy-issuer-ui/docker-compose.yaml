@@ -34,7 +34,7 @@ services:
         --seed ${AGENT_SEED:-quoi7Eukie8yiuGaiy3daej4ar7rieSo} \
         --genesis-url ${GENESIS_URL:-http://test.bcovrin.vonx.io/genesis} \
         --endpoint ${ENDPOINT:-http://localhost:10000} \
-        --webhook-url ${WEBHOOK_URL:-http://issuer-ui:3000/api/webhooks}
+        --webhook-url ${WEBHOOK_URL:-http://issuer:3000/api/webhooks}
         --admin-insecure-mode \
         --plugin aries_cloudagent.messaging.jsonld \
         --auto-ping-connection \
