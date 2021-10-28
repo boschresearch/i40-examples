@@ -34,17 +34,19 @@ r = session.post(DEVICE_GRANT_ENDPOINT, {'client_id': CLIENT_ID})
 rj = r.json()
 device_grant_result = rj
 device_code = rj['device_code']
+interval = rj['interval']
 pprint(rj)
 
 try:
     time.sleep(3)
-    webbrowser.open_new_tab(device_grant_result['verification_uri_complete'])
+    #webbrowser.open_new_tab(device_grant_result['verification_uri_complete'])
 except:
     print('Could not open browser, please try it manually')
 
+print('Use this URL to signin: ', device_grant_result['verification_uri_complete'])
+print('Polling authentication state...')
 token_result = None
 while True:
-    print('Polling authentication state...')
     data = {
         'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
         'client_id': CLIENT_ID,
@@ -54,10 +56,10 @@ while True:
     rj = r.json()
     if 'error' in rj:
         #pprint(rj)
-        print('Server Reply: ', rj['error'])
-        print('Server Reply: ', rj['error_description'])
-        print('Use this URL to signin: ', device_grant_result['verification_uri_complete'])
-        time.sleep(3)
+        #print('Server Reply: ', rj['error'])
+        #print('Server Reply: ', rj['error_description'])
+        #print('Use this URL to signin: ', device_grant_result['verification_uri_complete'])
+        time.sleep(interval)
     else:
         token_result = rj
         break
