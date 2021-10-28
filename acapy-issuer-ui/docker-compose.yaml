@@ -15,7 +15,7 @@ services:
     command: [
       "sh",
       "-c",
-      "sleep 10 && npm run dev"
+      "sleep 10 && npm run start"
     ]
 
   acapyissuer:
