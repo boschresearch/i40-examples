@@ -53,6 +53,7 @@ services:
         --auto-accept-requests \
         --auto-verify-presentation \
         --public-invites \
+        --label ${ISSUER_LABEL:-IdentityIssuer} \
         --invite-public \
         --log-level info",
     ]

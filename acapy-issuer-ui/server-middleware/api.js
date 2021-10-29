@@ -121,7 +121,7 @@ async function initCredentialDefinitionWithSchema (schemaId) {
   const { data: created } = await axios.post(ACAPY_URL + '/credential-definitions', {
     schema_id: schemaId,
     support_revocation: false,
-    tag: Date.now().toString() // sufficient here
+    tag: 'OrganizationID-' + Date.now().toString()
   })
     .catch((err) => {
       console.error(err)
