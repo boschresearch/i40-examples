@@ -40,7 +40,7 @@ export default {
       console.log(this.first_name, this.last_name, this.email)
       this.clear()
 
-      const { data } = await this.$axios.post('/api/credential/request', {first_name: this.first_name, last_name: this.last_name, email: this.email} )
+      const { data } = await this.$axios.post(this.$config.base + '/api/credential/request', {first_name: this.first_name, last_name: this.last_name, email: this.email} )
       console.log(data)
       this.error = data?.error || ''
       this.message = data?.message || ''

@@ -127,6 +127,7 @@ async function initCredentialDefinitionWithSchema (schemaId) {
 
 const initServer = function () {
   console.log('server started.')
+  console.log('BASE_PATH:', process.env.BASE_PATH)
   // once server has started, make sure we have a credential definition available in case we plan to issue credentials
   console.log('initializing credential definition...')
   initCredentialDefinitionWithSchema(SCHEMA_ID)

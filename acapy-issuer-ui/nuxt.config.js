@@ -73,6 +73,11 @@ export default {
   },
 
   publicRuntimeConfig: {
+    base: process.env.BASE_PATH || ''
+  },
+
+  router: {
+    base: process.env.BASE_PATH || ''
   },
 
   server: {

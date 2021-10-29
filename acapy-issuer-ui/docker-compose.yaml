@@ -12,6 +12,10 @@ services:
       - acapyissuer
     ports:
       - ${ISSUER_HTTP_PORT:-3000}:3000
+    environment:
+      # this is a workaround if a reverse proxy, e.g. nginx uses a subdirectory
+      # if you change this, don't forget to also update the WEBHOOK_URL accordingly!
+      - BASE_PATH=${ISSUER_BASE_PATH-}
     command: [
       "sh",
       "-c",
