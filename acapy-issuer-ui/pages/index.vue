@@ -3,7 +3,9 @@
     <v-text-field label="First Name" v-model="first_name" :disabled="lock"></v-text-field>
     <v-text-field label="Last Name" v-model="last_name" :disabled="lock"></v-text-field>
     <v-text-field label="Email" v-model="email" :disabled="lock"></v-text-field>
-    <v-btn @click="requestCredential()" color="primary" :disabled="lock"><v-icon>mdi-send</v-icon></v-btn>
+    <v-btn @click="requestCredential()" color="primary" :disabled="lock"><v-icon>mdi-send</v-icon>Send</v-btn>
+
+    <v-btn @click="logout()" color="primary"><v-icon>mdi-logout</v-icon>Logout</v-btn>
 
     <v-alert type="error" v-if="error">{{error}}</v-alert>
     <v-alert type="success" v-if="message">{{message}}</v-alert>
@@ -35,6 +37,9 @@ export default {
       this.error = ''
       this.message = ''
       this.invitation_url = ''
+    },
+    async logout () {
+      await this.$axios.get(this.$config.base + '/api/logout')
     },
     async requestCredential () {
       console.log(this.first_name, this.last_name, this.email)

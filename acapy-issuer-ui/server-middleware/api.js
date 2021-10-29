@@ -81,6 +81,16 @@ app.post('/credential/request', (req, res) => {
     }
   })
 
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err)
+    }
+    res.json({})
+  })
+})
+
+
 /* DO NOT USE THIS IN PRODUCTION */
 app.post('/webhooks/*', (req, res) => {
   console.log(req.originalUrl)
