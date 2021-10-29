@@ -42,9 +42,9 @@ services:
         --wallet-name mywallet \
         --wallet-key ${AGENT2_SEED:-12345} \
         --auto-provision \
-        --seed ${AGENT_SEED:-quoi7Eukie8yiuGaiy3daej4ar7rieSo} \
+        --seed ${AGENT_SEED:?\n\n=== Please create and set AGENT_SEED (private secret) in .env file and register your identity on the ledger. 'pwgen -1 32' ===\n} \
         --genesis-url ${GENESIS_URL:-http://test.bcovrin.vonx.io/genesis} \
-        --endpoint ${ENDPOINT:-http://localhost:10000} \
+        --endpoint ${ENDPOINT:?\n\n=== For an issuer, it's mandatory to provide a public endpoint which points to this container ===\n} \
         --webhook-url ${WEBHOOK_URL:-http://issuer:3000/api/webhooks}
         --admin-insecure-mode \
         --plugin aries_cloudagent.messaging.jsonld \
