@@ -2,7 +2,6 @@ const bodyParser = require('body-parser')
 const axios = require('axios').default
 const app = require('express')()
 const session = require('express-session')
-const nodeutil = require('util');
 
 const SCHEMA_ID = process.env.SCHEMA_ID || 'HK8EKmz5Ses1KwMVcuojyd:2:basic_schema:1.0.0' // first such schema on test.bcovrin network
 const CONNECTION_ESTABLISHED_STATES = ['active', 'response']
@@ -113,22 +112,26 @@ async function initCredentialDefinitionWithSchema (schemaId) {
   const { data: existingCredDefId } = await axios.get(ACAPY_URL + '/credential-definitions/created?schema_id=' + encodeURI(schemaId))
   if (existingCredDefId?.credential_definition_ids.length > 0) {
     app.locals.credDefIds[schemaId] = existingCredDefId.credential_definition_ids[0]
+    console.log('credDefId: ' + app.locals.credDefIds[schemaId])
     return app.locals.credDefIds[schemaId]
   }
   // ok, no cred_def_id, let's create one
   // whenever the wallet is deleted, we need to create a new cred_def_id on the ledger
   // it seems we can not fetch and reuse. Thus, let's use a unique tag
-  const { data: created } = await axios.post(ACAPY_URL + '/credential-definitions', {
+  const cred_def_data = {
     schema_id: schemaId,
     support_revocation: false,
     tag: 'OrganizationID-' + Date.now().toString()
-  })
+  }
+  console.log('cred_def_data: ' + JSON.stringify(cred_def_data))
+  const { data: created } = await axios.post(ACAPY_URL + '/credential-definitions', cred_def_data)
     .catch((err) => {
       console.error(err)
       return 0
     })
   if (created) {
-    app.locals.credDefIds[schemaId] = created
+    app.locals.credDefIds[schemaId] = created['credential_definition_id']
+    console.log('credDefId: ' + app.locals.credDefIds[schemaId])
     return app.locals.credDefIds[schemaId]
   }
   // ok, last but not least, some kind of an error
