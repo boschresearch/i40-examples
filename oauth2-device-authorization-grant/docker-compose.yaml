@@ -7,6 +7,7 @@ services:
       - "KEYCLOAK_USER=admin"
       - "KEYCLOAK_PASSWORD=admin"
       - "DB_VENDOR=h2"
+      - "PROXY_ADDRESS_FORWARDING=true"
       - "KEYCLOAK_IMPORT=/tmp/test-realm-export.json -Dkeycloak.migration.provider=singleFile"
     volumes:
       - "./test-realm-export.json:/tmp/test-realm-export.json"
