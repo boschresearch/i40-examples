@@ -1,3 +1,8 @@
+# WARNING
+This is far from production ready!!! Security is even disabled in some areas, e.g. API keys! It is a pure development example!
+
+**DO NOT USE THIS IN PRODUCTION SYSTEMS**
+
 # Howto
 ## Quick Start
 - Start `docker-compose up`
@@ -11,6 +16,63 @@
 - `devicegrant` client id ("public", no secret necessary)
 - Keycloak data is imported from `test-realm-export.json`
 
+# Configuration
+Create a `.env` file and configure it with e.g.
+```
+AGENT_ENDPOINT=
+AGENT_HTTP_PORT=
+ACAPY_AGENT_URL=
+# IDENTITY_SERVER_URL=
+# IDENTITY_SERVER_WEB_HOOK_URL=
+# REDIRECT_URI=
+```
+
+If you run it on a local machine with the docker setup, you need port forwarding from the internet, you can use ngrok or if you have a server use SSH port forwarding and nginx proxy_pass with SSL certificates from letsencrypt
+
+If you run this on a domain name NOT being localhost, you need to change the Identity Provider in keycloak:
+```
+Identity Provider -> Verifiable Credential Access -> Authorization URL
+```
+You can leave the `Token URL` as is because it uses the container-2-container connection.
+
+## nginx example configuration
+Minimalistic config, e.g. `/etc/nginx/sites-enabled/xxx.config`
+```
+server {
+
+    server_name subdomain.domain.org;
+
+    location / {
+        proxy_pass http://127.0.0.1:6000;
+    }
+
+```
+Run letsencrypt config
+```
+certbot --nginx
+# select the hostname from the list
+```
+
+If you want to connect with Android Smartphones which are affected by the letsencrypt certificate chain issue, you can manually select another root ca with:
+```
+certbot --nginx --preferred-chain "ISRG Root X1"
+```
+Keept in mind, that for this command you need a recent version of certbot. On e.g. Ubuntu 18.04 LTS this is not in the default apt repository and you have to follow the instructions to install it via `snap`
+https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
+
+
+## SSH port forwarding
+Example
+```
+ssh -R1000:localhost:20000 -R<remote_port>:localhost:<local_port> root@myserver.org
+```
+
+## Browser
+If you use the local (localhost) configuration provided here, you have to keep in mind CORS. Disable your browser CORS with e.g.
+
+```
+chromium-browser --disable-web-security --user-data-dir=./
+```
 
 # Concepts / Links
 Very minimalistic documentation in Keycloak:
@@ -38,10 +100,6 @@ docker-compose exec keycloak /opt/jboss/keycloak/bin/standalone.sh -Djboss.socke
 ```
 Ref: https://github.com/keycloak/keycloak-documentation/blob/master/server_admin/topics/export-import.adoc
 
-## Chromium without CORS security
-```
-chromium-browser --disable-web-security --user-data-dir=./
-```
 
 ## Android Screen
 ```
