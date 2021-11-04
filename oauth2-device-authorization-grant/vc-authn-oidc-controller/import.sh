@@ -1,6 +1,8 @@
 #!/bin/sh
 
+echo "Import script... Sleeping for a while..."
 sleep 15
+echo "Sleep done."
 
 for filename in /import/*.json; do
 
