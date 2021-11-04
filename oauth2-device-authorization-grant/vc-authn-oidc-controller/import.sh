@@ -16,9 +16,3 @@ for filename in /import/*.json; do
 
 done
 echo "Importing done."
-
-echo "Setting up database with redirect URIs..."
-
-psql -h controller-db -U controller -d controller -f /import/insert_uri.sql
-
-psql -h controller-db -U controller -d controller -f /import/redirect_uris.sql

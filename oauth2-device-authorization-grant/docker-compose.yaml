@@ -13,6 +13,8 @@ services:
       - "./test-realm-export.json:/tmp/test-realm-export.json"
     ports:
       - ${KEYCLOAK_HTTP_PORT:-8080}:8080
+    networks:
+      - vc_authn_oidc
     # command: "-b 0.0.0.0 -Dkeycloak.migration.action=export "
   
 
@@ -23,8 +25,8 @@ services:
       POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD:-password}
       POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE:-controller}
       POSTGRESQL_ADMIN_PASSWORD: ${POSTGRESQL_ADMIN_PASSWORD:-password}
-    #ports:
-      #- ${DATABASE_PORT:-5432}:5432
+    ports:
+      - ${DATABASE_PORT:-5432}:5432
     networks:
       - vc_authn_oidc
 
@@ -64,16 +66,23 @@ services:
     environment:
       - PGPASSWORD=${POSTGRESQL_PASSWORD:-password}
       #- ApiKey=${IDENTITY_SERVER_API_KEY:-12345}
+      - Logging__LogLevel__Default=Debug
       - SwaggerEnabled=${IDENTITY_SERVER_SWAGGER_ENABLED:-true}
       - IdentityServer__ConnectionStrings__Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-controller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
       - IdentityServer__PublicOrigin=${IDENTITY_SERVER_URL:-http://localhost:5000}
       - IdentityServer__PollInterval=${IDENTITY_SERVER_POLL_INTERVAL:-2000}
+      - IdentityServer__Clients__0__Enabled=true
+      - IdentityServer__Clients__0__ClientId=keycloak
+      - IdentityServer__Clients__0__ClientName=keycloak
+      - IdentityServer__Clients__0__RedirectUris__0=${REDIRECT_URI:-http://localhost:8080/auth/realms/test/broker/vc-authn/endpoint}
+      - IdentityServer__Clients__0__RequireClientSecret=false
+      - IdentityServer__Clients__0__RequireConsent=false
       - ACAPY__AdminUrl=${ACAPY_ADMIN_URL:-http://aca-py:10000}
       - ACAPY__AdminURLApiKey=${ACAPY_ADMIN_URL_API_KEY}
       - ACAPY__AgentUrl=${ACAPY_AGENT_URL:-http://aca-py:10001}
       - UrlShortenerService__ConnectionStrings__Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-controller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
       - UrlShortenerService__BaseUrl=${IDENTITY_SERVER_URL:-http://localhost:5000}/url
-      - SessionStorageService__ConnectionStrings_Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-coontroller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
+      - SessionStorageService__ConnectionStrings__Database=Host=controller-db;Port=${DATABASE_PORT:-5432};Database=${POSTGRESQL_DATABASE:-coontroller};Username=${POSTGRESQL_USER:-controller};Password=${POSTGRESQL_PASSWORD:-password};
     networks:
       - vc_authn_oidc
     depends_on:
@@ -83,7 +92,7 @@ services:
     command: >
       /bin/bash -c "
       echo waiting for controller-db ...;
-      sleep 15;
+      sleep 10;
       dotnet VCAuthn.dll & /app/import.sh; wait"
 
 networks:
