@@ -37,3 +37,13 @@ Beware: If you add new user/passwords, the execution of the following command al
 docker-compose exec keycloak /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.realmName=test -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/test-realm-export.json
 ```
 Ref: https://github.com/keycloak/keycloak-documentation/blob/master/server_admin/topics/export-import.adoc
+
+## Chromium without CORS security
+```
+chromium-browser --disable-web-security --user-data-dir=./
+```
+
+## Android Screen
+```
+scrcpy
+```
