@@ -29,7 +29,6 @@ services:
       - agentnet
     ports:
       - ${AGENT_HTTP_PORT:-20000}:10000
-      - ${AGENT_ADMIN_HTTP_PORT:-20001}:10001
     entrypoint: /bin/bash
     # variables replaced by docker-compose (not inside the container!)
     command: [
