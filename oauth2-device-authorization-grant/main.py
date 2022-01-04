@@ -18,8 +18,8 @@ CLIENT_ID = os.environ.get('CLIENT_ID') or 'devicegrant'
 REALM = os.environ.get('REALM') or 'test'
 DISABLE_SSL_VERIFY = os.environ.get('DISABLE_SSL_VERIFY', 'False').lower() in ('true', '1')
 
-DEVICE_GRANT_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/auth/device'
-TOKEN_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/token'
+DEVICE_GRANT_ENDPOINT = os.environ.get('DEVICE_GRANT_ENDPOINT') or BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/auth/device'
+TOKEN_ENDPOINT = os.environ.get('TOKEN_ENDPOINT') or BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/token'
 USERINFO_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/userinfo'
 CERTIFICATE_ENDPOINT = BASE_URL + '/auth/realms/' + REALM + '/protocol/openid-connect/certs'
 
