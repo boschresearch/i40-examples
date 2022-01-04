@@ -17,7 +17,7 @@ This is far from production ready!!! Security is even disabled in some areas, e.
 - Keycloak data is imported from `test-realm-export.json`
 
 # Configuration
-Create a `.env` file and configure it with e.g.
+Create a `.env` (or copy and fill `.env-example`) file and configure it with e.g.
 ```
 AGENT_ENDPOINT=
 AGENT_HTTP_PORT=
