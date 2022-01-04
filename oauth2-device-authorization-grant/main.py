@@ -34,7 +34,7 @@ r = session.post(DEVICE_GRANT_ENDPOINT, {'client_id': CLIENT_ID})
 rj = r.json()
 device_grant_result = rj
 device_code = rj['device_code']
-interval = rj['interval']
+interval = rj.get('interval', 5)
 pprint(rj)
 
 try:
