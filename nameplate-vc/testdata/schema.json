@@ -1,0 +1,28 @@
+{
+    "aio": "https://admin-shell-io.com/ns#",
+    "@type": "aio:Nameplate",
+    "ManufacturerName": "aio:ManufacturerName",
+    "ManufacturerProductDesignation": "aio:ManufacturerProductDesignation",
+    "PhysicalAddress": {
+        "@type": "aio:PhysicalAddress",
+        "CountryCode": "aio:CountryCode",
+        "Street": "aio:Street",
+        "Zip": "aio:Zip",
+        "CityTown": "aio:CityTown",
+        "StateCounty": "aio:StateCounty"
+    },
+    "ManufacturerProductFamily": "aio:ManufacturerProductFamily",
+    "SerialNumber": "aio:SerialNumber",
+    "BatchNumber": "aio:BatchNumber",
+    "ProductCountryOfOrigin": "aio:ProductCountryOfOrigin",
+    "YearOfConstruction": "aio:YearOfConstruction",
+    "Marking_CE": {
+        "@type": "aio:Marking_CE",
+        "CEQualificationPresent": "aio:CEQualificationPresent",
+        "File": {
+            "@type": "aio:File",
+            "mimeType": "aio:mimeType",
+            "value": "aio:value"
+        }
+    }
+}

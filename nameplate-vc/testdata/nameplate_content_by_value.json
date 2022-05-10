@@ -1,0 +1,41 @@
+[
+  {
+    "ManufacturerName": "Bosch Rexroth AG"
+  },
+  {
+    "ManufacturerProductDesignation": "Nexo Wi-Fi Cordless Nutrunner"
+  },
+  {
+    "PhysicalAddress": {
+      "CountryCode": "DE",
+      "Street": "Fornsbacher Straße 92",
+      "Zip": "71540",
+      "CityTown": "Murrhardt",
+      "StateCounty": "Baden-Württemberg"
+    }
+  },
+  {
+    "ManufacturerProductFamily": "Cordless Nutrunner"
+  },
+  {
+    "SerialNumber": "917004878"
+  },
+  {
+    "BatchNumber": ""
+  },
+  {
+    "ProductCountryOfOrigin": "DE"
+  },
+  {
+    "YearOfConstruction": "xxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+    "Marking_CE": {
+      "CEQualificationPresent": "1",
+      "File": {
+        "mimeType": "image/png",
+        "value": "/aasx/Nameplate/marking_ce.png"
+      }
+    }
+  }
+]

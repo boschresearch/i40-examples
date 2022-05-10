@@ -1,0 +1,40 @@
+version: '3.6'
+
+services:
+
+  acapy:
+    build:
+      # buildkit does NOT support subidrs yet therefore, this MUST be built with:
+      # DOCKER_BUILDKIT=0
+      context: https://github.com/bcgov/aries-cloudagent-container.git#main:python
+      args:
+        - base_image=bcgovimages/von-image:py36-1.16-1
+        - git_egg_ref=git+https://github.com/boschresearch/aries-cloudagent-python.git@df2c3a88358ed847bfbceb2f6b2ad7601addb14f#egg=
+        - DESCRIPTION=custom_build
+    ports:
+      - 127.0.0.1:30000:30000
+    entrypoint: /bin/bash
+    environment:
+      - ACAPY_MULTITENANCY_CONFIGURATION:{\"wallet_type\":\"askar-profile\"}
+    command: [
+      "-c",
+      "aca-py start \
+      --inbound-transport http 0.0.0.0 30002 \
+      --outbound-transport http \
+      --admin 0.0.0.0 30000 \
+      --admin-insecure-mode \
+      --auto-verify-presentation \
+      --auto-accept-invites --auto-accept-requests --auto-ping-connection \
+      --invite-public --public-invites --invite-multi-use \
+      --auto-store-credential --auto-respond-credential-offer \
+      --auto-respond-presentation-proposal --auto-verify-presentation \
+      --log-level DEBUG \
+      --genesis-url ${GENESIS_URL-http://test.bcovrin.vonx.io/genesis} \
+      --seed ${SEED:?Please add SEED to .env file} \
+      --wallet-type indy --wallet-name base_wallet --wallet-key ${WALLET_KEY:?Please add WALLET_KEY to .env file} \
+      --auto-provision \
+      --multitenant --multitenant-admin \
+      --jwt-secret ${JWT_SECRET:?Please add JWT_SECRET to .env file} \
+      --endpoint ${ACAPY_ENDPOINT:-http://acapy:30002} \
+      "
+    ]
