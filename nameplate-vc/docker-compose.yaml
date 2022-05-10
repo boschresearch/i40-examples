@@ -1,6 +1,12 @@
 version: '3.6'
 
 services:
+  nameplatevc:
+    build: ./
+    ports:
+      - 8080:8080
+    depends_on:
+      - acapy
 
   acapy:
     build:

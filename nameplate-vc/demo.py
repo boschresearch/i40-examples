@@ -46,3 +46,20 @@ def create_selfdescription(aas_id:str, key_value:list = Body(...)):
     """
     selfdescription = ssi.self_sign_vc(tenant_id='demo', subject_identifier=aas_id, create_as_verifiable_presentation=True, key_value=key_value)
     return selfdescription
+
+@router.post('/demo/verify')
+def verify(doc: dict = Body(...)):
+    """
+    "outer_proof_verified" is the Verifiable Presentation
+
+    "inner_proof" is the Verifiable Credential(s). The list is in the same order as the input. "all_inner_proofs" is a single value to check if ALL are verified.
+
+    {
+    "outer_proof_verified": true,
+    "inner_proofs_verified": [
+        true
+    ],
+    "all_inner_proofs_verified": true
+    }
+    """
+    return ssi.verify_vc_or_vp(tenant_id='demo', doc=doc)

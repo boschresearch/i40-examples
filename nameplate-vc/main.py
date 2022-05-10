@@ -106,6 +106,8 @@ def self_sign_from_registry(
     return signed
 
 # create demo user if not exists yet
+import time
+time.sleep(5) # wait for acapy, TODO: improve this ;-)
 ssi.create_tenant(tenant_id='demo')
 
 if __name__ == '__main__':
