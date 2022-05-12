@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         env_file = os.getenv('ENV_FILE', '.env')
 
 settings: Settings = Settings()
+print(settings.json(indent=4))
 
 DB_KEY_PREFIX_VC = 'VC_'
 DB_KEY_PREFIX_VP = 'VP_'

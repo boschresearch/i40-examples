@@ -4,7 +4,7 @@ services:
   nameplatevc:
     build: ./
     ports:
-      - 8080:8080
+      - ${NAMEPLATEVC_PORT:-8080}:8080
     depends_on:
       - acapy
 
@@ -17,8 +17,8 @@ services:
         - base_image=bcgovimages/von-image:py36-1.16-1
         - git_egg_ref=git+https://github.com/boschresearch/aries-cloudagent-python.git@df2c3a88358ed847bfbceb2f6b2ad7601addb14f#egg=
         - DESCRIPTION=custom_build
-    ports:
-      - 127.0.0.1:30000:30000
+    #ports:
+      #- 127.0.0.1:30000:30000
     entrypoint: /bin/bash
     environment:
       - ACAPY_MULTITENANCY_CONFIGURATION:{\"wallet_type\":\"askar-profile\"}

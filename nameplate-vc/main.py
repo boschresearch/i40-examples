@@ -7,6 +7,7 @@
 import os
 import json
 from datetime import datetime
+import requests
 from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from uuid import uuid4
@@ -105,12 +106,25 @@ def self_sign_from_registry(
 
     return signed
 
-# create demo user if not exists yet
-import time
-time.sleep(5) # wait for acapy, TODO: improve this ;-)
-ssi.create_tenant(tenant_id='demo')
+def check_acapy():
+    while(True):
+        try:
+            r = requests.get(settings.acapy_api + '/status')
+            if r.status_code == 200:
+                return True
+        except:
+            pass
+
 
 if __name__ == '__main__':
+
+    # create demo user if not exists yet
+    import time
+    check_acapy()
+    import asyncio
+    asyncio.run(ssi.create_tenant(tenant_id='demo'))
+
+
     import uvicorn
     port = os.getenv('PORT', '8080')
     workers = os.getenv('WORKERS', '1')

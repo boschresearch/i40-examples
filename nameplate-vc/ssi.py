@@ -82,10 +82,10 @@ async def create_new_tenant():
     """
     while(True):
         tenant_id = secrets.token_hex(3)
-        if create_tenant(tenant_id=tenant_id):
+        if await create_tenant(tenant_id=tenant_id):
             return {'tenant': tenant_id }
 
-def create_tenant(tenant_id: str):
+async def create_tenant(tenant_id: str):
     """
     Create a Tenant
     Return: True if can be createcd
@@ -93,6 +93,7 @@ def create_tenant(tenant_id: str):
     """
     exists = db.key_in_db(key=tenant_id, dbname=settings.db_name_tenants)
     if exists:
+        print(f"tenant with tenant_id: {tenant_id} already exists. Not creating it again.")
         return False
 
     db.set_item(key=tenant_id, item=Tenant(), dbname=settings.db_name_tenants)
@@ -179,6 +180,8 @@ async def create_sub_wallet(tenant_id: str):
             if j['result']['posture'] in ['posted', 'public']:
                 tenant.did_published = True
         db.set_item(key=tenant_id, item=tenant, dbname=settings.db_name_tenants)
+        print('new tenant:')
+        print(tenant.json(indent=4))
 
 
 @router.post('/{tenant_id}/connect')
