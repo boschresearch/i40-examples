@@ -81,3 +81,17 @@ ISSUE_VC_TEMPLATE = """
     }
 }
 """
+
+VC_TEMPLATE = """
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1"
+    ],
+    "type": [
+        "VerifiableCredential"
+    ],
+    "issuer": "",
+    "issuanceDate": "",
+    "credentialSubject": {}
+}
+"""

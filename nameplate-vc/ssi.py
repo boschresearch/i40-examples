@@ -73,6 +73,60 @@ def self_sign_vc(
 
     return result
 
+def self_sign_vc_doc(
+        tenant_id: str,
+        subject_identifier: str,
+        vc_context,
+        create_as_verifiable_presentation: bool = False,
+        vc_doc_unsigned:list = [],
+    ):
+    """
+    Used in the case the VC is NOT issued/sent to another identity.
+    It is for signing VC for itself.
+
+    subject_identifier: e.g. aas_id
+
+    vc_context: the context which is added to the VC
+    vc_doc_unsigned: a VC items which is not yet signed (does not contain a proof)
+    """
+    result = None
+    GENERIC_CREDENTIAL_TYPE = 'I40GenericCredential'
+    AIO_GENERIC_CREDENTIAL_TYPE = 'aio:' + GENERIC_CREDENTIAL_TYPE
+
+    data = json.loads(templates.VC_TEMPLATE)
+
+    # prepare context
+    vc_context['aio'] = "https://admin-shell-io.com/ns#"
+    vc_context[GENERIC_CREDENTIAL_TYPE] = AIO_GENERIC_CREDENTIAL_TYPE
+    data['@context'].append(vc_context)
+
+    data['type'].append(GENERIC_CREDENTIAL_TYPE)
+    data['credentialSubject'] = vc_doc_unsigned
+
+    timestamp = datetime.now().isoformat(timespec='seconds')
+    data['issuanceDate'] = timestamp
+
+    tenant: Tenant = db.get_item(key=tenant_id, dbname=settings.db_name_tenants)
+    did = prefix_did(tenant.did)
+    data['issuer'] = did
+    data['credentialSubject']['id'] = subject_identifier
+
+    vc = self_sign(tenant_id=tenant_id, credential=data)
+    result = vc
+
+    vp = None
+    if create_as_verifiable_presentation:
+        vp = {
+            "@context": [
+                "https://www.w3.org/2018/credentials/v1"
+            ],
+            "type": "VerifiablePresentation",
+            'verifiableCredential': [vc]
+        }
+        result = self_sign(tenant_id=tenant_id, credential=vp)
+
+    return result
+
 
 @router.post('/tenant')
 async def create_new_tenant():

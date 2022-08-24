@@ -4,8 +4,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from pydantic import Field
 from fastapi import APIRouter, Body
 import endpoints
+from models import MyBaseModel
 import ssi
 
 router = APIRouter(tags=['demo'])
@@ -63,3 +65,46 @@ def verify(doc: dict = Body(...)):
     }
     """
     return ssi.verify_vc_or_vp(tenant_id='demo', doc=doc)
+
+class SignDocRequest(MyBaseModel):
+    context: dict = Field(default={}, description='Goes into @context as an additional item')
+    doc: dict = Field(default={}, description='Everything that goes under credentialSubject')
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "context": {"semanticId__1": "aio:semanticId__1"},
+                "doc": {"semanticId__1": "urn:xxx"},
+            }
+        }
+
+@router.post('/demo/sign')
+def demo_sign(
+        subject_identifier: str,
+        create_as_verifiable_presentation: bool = False,
+        body: SignDocRequest = Body(...)
+    ):
+    """
+# Sign a given structure.
+Example:
+```
+{
+  "context": {
+    "semanticId__1": "aio:semanticId__1"
+  },
+  "doc": {
+    "semanticId__1": "urn:xxx"
+  }
+}
+```
+    """
+    context = body.context
+    doc = body.doc
+    signed = ssi.self_sign_vc_doc(
+        'demo',
+        subject_identifier,
+        vc_context=context,
+        create_as_verifiable_presentation=create_as_verifiable_presentation,
+        vc_doc_unsigned=doc
+        )
+    return signed
