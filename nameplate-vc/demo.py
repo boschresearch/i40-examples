@@ -80,7 +80,6 @@ class SignDocRequest(MyBaseModel):
 
 @router.post('/demo/sign')
 def demo_sign(
-        subject_identifier: str,
         create_as_verifiable_presentation: bool = False,
         body: SignDocRequest = Body(...)
     ):
@@ -102,7 +101,6 @@ Example:
     doc = body.doc
     signed = ssi.self_sign_vc_doc(
         'demo',
-        subject_identifier,
         vc_context=context,
         create_as_verifiable_presentation=create_as_verifiable_presentation,
         vc_doc_unsigned=doc
